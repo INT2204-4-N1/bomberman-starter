@@ -1,6 +1,5 @@
 package uet.oop.bomberman.entities.bomb;
 
-import uet.oop.bomberman.Board;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.graphics.Screen;
@@ -9,7 +8,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 public class FlameSegment extends Entity {
 
-	protected boolean _last;
+	protected boolean _last = false;
 
 	/**
 	 *
@@ -26,7 +25,7 @@ public class FlameSegment extends Entity {
 		switch (direction) {
 			case 0:
 				if(!last) {
-					_sprite = Sprite.explosion_vertical2;
+					_sprite = Sprite.explosion_vertical1;
 				} else {
 					_sprite = Sprite.explosion_vertical_top_last2;
 				}

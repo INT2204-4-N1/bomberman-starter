@@ -34,9 +34,7 @@ public class Bomb extends AnimatedEntitiy {
 		else {
 			if(!_exploded) 
 				explode();
-			else
-				updateFlames();
-			
+
 			if(_timeAfter > 0) 
 				_timeAfter--;
 			else
@@ -65,45 +63,32 @@ public class Bomb extends AnimatedEntitiy {
 			_flames[i].render(screen);
 		}
 	}
-	
-	public void updateFlames() {
-		for (int i = 0; i < _flames.length; i++) {
-			_flames[i].update();
-		}
-	}
 
     /**
      * Xử lý Bomb nổ
      */
 	protected void explode() {
 		_exploded = true;
-		
-		// TODO: xử lý khi Character đứng tại vị trí Bomb
-		
-		// TODO: tạo các Flame
-
 		_allowedToPassThru = true;
-		_exploded = true;
 
+		// TODO: xử lý khi Character đứng tại vị trí Bomb
 		Character a = _board.getCharacterAt(_x, _y);
-		if(a != null)  {
-			a.kill();
-		}
+		if(a != null)  { a.kill(); }
 
+		// TODO: tạo các Flame
 		_flames = new Flame[4];
-
 		for (int i = 0; i < _flames.length; i++) {
 			_flames[i] = new Flame((int)_x, (int)_y, i, Game.getBombRadius(), _board);
 		}
 	}
 	
 	public FlameSegment flameAt(int x, int y) {
-		if(!_exploded) return null;
-		
-		for (int i = 0; i < _flames.length; i++) {
-			if(_flames[i] == null) return null;
-			FlameSegment e = _flames[i].flameSegmentAt(x, y);
-			if(e != null) return e;
+				if(!_exploded) return null;
+
+				for (int i = 0; i < _flames.length; i++) {
+					if(_flames[i] == null) return null;
+					FlameSegment e = _flames[i].flameSegmentAt(x, y);
+					if(e != null) return e;
 		}
 		
 		return null;
@@ -112,19 +97,18 @@ public class Bomb extends AnimatedEntitiy {
 	@Override
 	public boolean collide(Entity e) {
         // TODO: xử lý khi Bomber đi ra sau khi vừa đặt bom (_allowedToPassThru)
-        // TODO: xử lý va chạm với Flame của Bomb khác
-
 		if(e instanceof Bomber) {
 			double diffX = e.getX() - Coordinates.tileToPixel(getX());
 			double diffY = e.getY() - Coordinates.tileToPixel(getY());
 
-			if(!(diffX >= -10 && diffX < 16 && diffY >= 1 && diffY <= 28)) { // differences to see if the player has moved out of the bomb, tested values
+			if(!(diffX >= -10 && diffX < 16 && diffY >= 1 && diffY <= 28)) {
 				_allowedToPassThru = false;
 			}
 
 			return _allowedToPassThru;
 		}
 
+        // TODO: xử lý va chạm với Flame của Bomb khác
 		if(e instanceof Flame) {
 			_timeToExplode = 0;
 			return true;

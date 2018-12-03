@@ -2,7 +2,10 @@ package uet.oop.bomberman.entities.bomb;
 
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.Character;
+import uet.oop.bomberman.entities.character.enemy.Enemy;
+import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.graphics.Screen;
 
 public class Flame extends Entity {
@@ -46,11 +49,10 @@ public class Flame extends Entity {
 		boolean last;
 
 		// TODO: tạo các segment dưới đây
-
 		int x = (int)_x;
 		int y = (int)_y;
 		for (int i = 0; i < _flameSegments.length; i++) {
-			last = i == _flameSegments.length -1 ? true : false;
+			last = (i == _flameSegments.length -1);
 			switch (_direction) {
 				case 0: y--; break;
 				case 1: x++; break;
@@ -75,14 +77,9 @@ public class Flame extends Entity {
 			if(_direction == 1) x++;
 			if(_direction == 2) y++;
 			if(_direction == 3) x--;
-
 			Entity a = _board.getEntity(x, y, null);
-
-			if(a instanceof Character) ++radius; //explosion has to be below the mob
-
-			if(a.collide(this) == false) //cannot pass thru
-				break;
-
+			if(a instanceof Character) ++radius;
+			if(!a.collide(this)) break;
 			++radius;
 		}
 		return radius;
@@ -109,6 +106,9 @@ public class Flame extends Entity {
 	@Override
 	public boolean collide(Entity e) {
 		// TODO: xử lý va chạm với Bomber, Enemy. Chú ý đối tượng này có vị trí chính là vị trí của Bomb đã nổ
+		if(e instanceof Bomber || e instanceof Enemy) {
+			((Character)e).kill();
+		}
 		return true;
 	}
 }

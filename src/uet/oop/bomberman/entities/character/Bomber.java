@@ -23,7 +23,7 @@ public class Bomber extends Character {
      * nếu giá trị này < 0 thì cho phép đặt đối tượng Bomb tiếp theo,
      * cứ mỗi lần đặt 1 Bomb mới, giá trị này sẽ được reset về 0 và giảm dần trong mỗi lần update()
      */
-    protected int _timeBetweenPutBombs = 0;
+    protected double _timeBetweenPutBombs = 0;
 
     public Bomber(int x, int y, Board board) {
         super(x, y, board);
@@ -79,12 +79,12 @@ public class Bomber extends Character {
         if(_input.space && Game.getBombRate() > 0 && _timeBetweenPutBombs < 0) {
 
             int xt = Coordinates.pixelToTile(_x + _sprite.getSize() / 2);
-            int yt = Coordinates.pixelToTile( (_y + _sprite.getSize() / 2) - _sprite.getSize() ); //subtract half player height and minus 1 y position
-
-            placeBomb(xt,yt);
-            Game.addBombRate(-1);
-
-            _timeBetweenPutBombs = 30;
+            int yt = Coordinates.pixelToTile( (_y + _sprite.getSize() / 2) - _sprite.getSize() );
+            if(!(_board.getEntity(xt,yt,null) instanceof Bomb)) {
+                placeBomb(xt, yt);
+                Game.addBombRate(-1);
+                _timeBetweenPutBombs = 10;
+            }
         }
     }
 
@@ -143,9 +143,9 @@ public class Bomber extends Character {
     @Override
     public boolean canMove(double x, double y) {
         // TODO: kiểm tra có đối tượng tại vị trí chuẩn bị di chuyển đến và có thể di chuyển tới đó hay không
-        for (int i = 0; i < 4; i++) { //colision detection for each corner of the player
-            double xt = ((_x + x) + i % 2 * 11) / Game.TILES_SIZE; //divide with tiles size to pass to tile coordinate
-            double yt = ((_y + y) + i / 2 * 12 - 13) / Game.TILES_SIZE; //these values are the best from multiple tests
+        for (int i = 0; i < 4; i++) {
+            double xt = ((_x + x) + i % 2 * 10) / Game.TILES_SIZE;
+            double yt = ((_y + y) + i / 2 * 12 - 13) / Game.TILES_SIZE;
             Entity a = _board.getEntity(xt, yt, this);
             if(!a.collide(this))
                 return false;
@@ -164,7 +164,6 @@ public class Bomber extends Character {
         if(canMove(0, ya)) { _y += ya; }
         if(canMove(xa, 0)) { _x += xa; }
     }
-
     @Override
     public boolean collide(Entity e) {
         // TODO: xử lý va chạm với Flame
